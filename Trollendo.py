@@ -14,8 +14,9 @@ class MyClient(discord.Client):
         print(self.guilds)
     async def on_message(self, message):
         if (message.content.startswith("-")):
+            text_channel = message.channel
             if (message.author.voice is None or message.author.voice.channel is None):
-                print("author none")
+                await text_channel.send(message.author.mention + ", como vas a saber si hay clase sin meterte a un canal, melón.")
                 return
             if (message.content=="-clase"):
                 voice_channel = message.author.voice.channel
