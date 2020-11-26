@@ -30,7 +30,7 @@ class MyClient(discord.Client):
                     vc.stop()
                 self.stateid += 1
                 ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file), after=lambda e: print('done', e))
+                vc.play(discord.FFmpegPCMAudio(file))
                 await sleep(11.35)
                 if (ownid == self.stateid):
                     await vc.disconnect()
@@ -59,7 +59,7 @@ class MyClient(discord.Client):
                     vc.stop()
                 self.stateid += 1
                 ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file), after=lambda e: print('done', e))
+                vc.play(discord.FFmpegPCMAudio(file))
                 await sleep(11.5)
                 if (ownid == self.stateid):
                     await vc.disconnect()
