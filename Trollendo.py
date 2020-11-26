@@ -19,6 +19,8 @@ class MyClient(discord.Client):
                 return
             if (message.content=="-clase"):
                 voice_channel = message.author.voice.channel
+                if (isinstance(voice_channel, PrivateChannel)):
+                    return
                 vc = message.author.guild.voice_client
                 if (not vc):    
                     vc = await voice_channel.connect()
@@ -37,6 +39,8 @@ class MyClient(discord.Client):
             
             elif (message.content.startswith("-clase")):
                 voice_channel = message.author.voice.channel
+                if (isinstance(voice_channel, PrivateChannel)):
+                    return
                 vc = message.author.guild.voice_client
                 if (not vc):    
                     vc = await voice_channel.connect()
