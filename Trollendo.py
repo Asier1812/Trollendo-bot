@@ -1,5 +1,6 @@
 import discord
 import datetime
+import random
 from asyncio import sleep
 
 
@@ -69,6 +70,7 @@ class MyClient(discord.Client):
                     
             elif (message.content.startswith("-celebrate")):
                 if (message.author.voice is None or message.author.voice.channel is None):
+                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
                     return
                 voice_channel = message.author.voice.channel
                 vc = message.author.guild.voice_client
@@ -83,6 +85,29 @@ class MyClient(discord.Client):
                 ownid = self.stateid
                 vc.play(discord.FFmpegPCMAudio(file))
                 await sleep(13)
+                if (ownid == self.stateid):
+                    await vc.disconnect()
+                    
+            elif (message.content.startswith("-cum")):
+                if (message.author.voice is None or message.author.voice.channel is None):
+                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
+                    return
+                voice_channel = message.author.voice.channel
+                vc = message.author.guild.voice_client
+                if (not vc):    
+                    vc = await voice_channel.connect()
+
+
+                i = random.randint(1,6)
+                file = "cum"+str(i)+".mp3"
+
+                if(vc.is_playing()):
+                    vc.stop()
+                self.stateid += 1
+                ownid = self.stateid
+                vc.play(discord.FFmpegPCMAudio(file))
+                while vc.is_playing():
+                    await sleep(1)
                 if (ownid == self.stateid):
                     await vc.disconnect()
 
