@@ -111,6 +111,27 @@ class MyClient(discord.Client):
                 if (ownid == self.stateid):
                     await vc.disconnect()
 
+            elif (message.content.startswith("-moonlight")):
+                if (message.author.voice is None or message.author.voice.channel is None):
+                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
+                    return
+                voice_channel = message.author.voice.channel
+                vc = message.author.guild.voice_client
+                if (not vc):    
+                    vc = await voice_channel.connect()
+
+                file = "moonlight.mp3"
+
+                if(vc.is_playing()):
+                    vc.stop()
+                self.stateid += 1
+                ownid = self.stateid
+                vc.play(discord.FFmpegPCMAudio(file))
+                while vc.is_playing():
+                    await sleep(1)
+                if (ownid == self.stateid):
+                    await vc.disconnect()
+
 
 
 client = MyClient()
