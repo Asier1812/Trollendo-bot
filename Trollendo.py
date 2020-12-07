@@ -131,8 +131,38 @@ class MyClient(discord.Client):
                     await sleep(1)
                 if (ownid == self.stateid):
                     await vc.disconnect()
-
-
+        elif ("tactico" in message.content.lower() or "táctico" in  message.content.lower()):
+            if (message.author.name != "ClaseBot"):
+                text_channel = message.channel
+                frases = [["Joer ",", es que encima es táctico"], ["Madre mía ",",encima táctico"],["Joer ",", que táctico"],["Joer, madre mía, encima táctico"]]
+                
+                i = random.randint(0,3)
+                if (i == 3):
+                    await text_channel.send(frases[i][0])
+                else:
+                    await text_channel.send(frases[i][0] + message.author.mention + frases[i][1])
+        elif ("tactica" in message.content.lower() or "táctica" in  message.content.lower()):
+            if (message.author.name != "ClaseBot"):
+                text_channel = message.channel
+                frases = [["Joer ",", es que encima es táctica"], ["Madre mía ",",encima táctica"],["Joer ",", que táctica"],["Joer, madre mía, encima táctica"]]
+                
+                i = random.randint(0,3)
+                if (i == 3):
+                    await text_channel.send(frases[i][0])
+                else:
+                    await text_channel.send(frases[i][0] + message.author.mention + frases[i][1])
+        elif ("tactique" in message.content.lower() or "táctique" in  message.content.lower()):
+            if (message.author.name != "ClaseBot"):
+                text_channel = message.channel
+                frases = [["Joer ",", es que encima es táctique"], ["Madre mía ",",encima táctique"],["Joer ",", que táctique"],["Joer, madre mía, encima táctique"]]
+                
+                i = random.randint(0,3)
+                if (i == 3):
+                    await text_channel.send(frases[i][0])
+                else:
+                    await text_channel.send(frases[i][0] + message.author.mention + frases[i][1])
+        else:
+            print(message.author.name + " : " + message.content)
 
 client = MyClient()
 client.run("Nzc0Mzc4MDkzMzY4MTgwNzk3.X6W5zA.Z44fzZg0c_dbOeurUuqlxq3TkKc")
