@@ -3,6 +3,16 @@ import datetime
 import random
 from asyncio import sleep
 
+def comoestas():
+    with open("file.txt") as f:
+        line = int(f.readline()) + 1
+        f.close()
+    with open("file.txt", "w") as f:
+        f.write(str(line))
+        f.close()
+    return int(line)
+
+
 
 class MyClient(discord.Client):
 
@@ -153,6 +163,19 @@ class MyClient(discord.Client):
                     await sleep(1)
                 if (ownid == self.stateid):
                     await vc.disconnect()
+            elif (message.content.startswith("-comoestas")):
+                num = comoestas()
+                frases = ["Bastante bien joven. ", "Pues aqui estamos. ", "No muy bien amigo. ","El peor día de mi vida. " ,"Aburrido la verdad. Dale algun comandillo. "]
+                frasesshiny = ["Mi exmujer se ha quedado la custodia, me voy a sucidar. "]
+
+                frase = ""
+                i = random.randint(1, 100)
+                if (i == 100):
+                    frase = frasesshiny[0]
+                else:
+                    frase = frases[i%len(frases)]
+                await text_channel.send(frase + "Hasta ahora me lo han preguntado " + str(num) + " veces.")
+                
             
         elif ("tactico" in message.content.lower() or "táctico" in  message.content.lower()):
             if (message.author.name != "ClaseBot"):
