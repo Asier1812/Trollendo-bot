@@ -4,24 +4,63 @@ import random
 from asyncio import sleep
 
 def comoestas():
+    num = 0
+    tim = 0
     with open("file.txt") as f:
-        line = int(f.readline()) + 1
+        line = f.readline()
+        num = line.split("==")[0]
+        tim = datetime.datetime.strptime(line.split("==")[1], '%Y-%m-%d %H:%M:%S.%f')
         f.close()
+
+    now = datetime.datetime.now()
+    nowstr = now.strftime("%Y-%m-%d %H:%M:%S.%f")
     with open("file.txt", "w") as f:
-        f.write(str(line))
+        f.write(str(int(num) + 1) + "==" + str(nowstr))
         f.close()
-    return int(line)
 
 
+    daysdiff = abs((now - tim).days)
+    secondsdiff = abs((now - tim).seconds)
+
+    return int(num), daysdiff, secondsdiff
+
+
+def timedifftostr(daysdiff, secondsdiff):
+
+    hours = secondsdiff // 3600
+    minutes = (secondsdiff % 3600) // 60
+    seconds = secondsdiff % 60
+
+    ret = "Ya han pasado "
+    aux = False
+    appendix = ""
+    if (daysdiff >= 1):
+        ret += str(daysdiff) + " días"
+        appendix = ", "
+        aux = True
+    if (hours >= 1):
+        ret += appendix + str(hours) + " horas"
+        appendix = ", "
+        aux = True
+    if (minutes >= 1):
+        ret += appendix + str(minutes) + " minutos"
+        aux = True
+
+    if (aux):
+        ret += " y "
+    ret += str(seconds) + " segundos desde la última vez."
+
+    return ret
 
 class MyClient(discord.Client):
 
     def __init__(self):
         self.stateid = 0
         discord.Client.__init__(self)
-    
     async def on_ready(self):
         print('Logged on as {0}!'.format(self.user))
+        
+        
     async def on_message(self, message):
         if (message.content.startswith("-")):
             text_channel = message.channel
@@ -163,8 +202,9 @@ class MyClient(discord.Client):
                     await sleep(1)
                 if (ownid == self.stateid):
                     await vc.disconnect()
-            elif (message.content.startswith("-comoestas")):
-                num = comoestas()
+            elif (message.content.replace("?","").replace("¿","").startswith("-how") or message.content.replace("?","").replace("¿","").startswith("-how are you") ):
+                num, dd, sd = comoestas()
+                strdiff = timedifftostr(dd, sd)
                 frases = ["Bastante bien joven. ", "Pues aqui estamos. ", "No muy bien amigo. ","El peor día de mi vida. " ,"Aburrido la verdad. Dale algun comandillo. "]
                 frasesshiny = ["Mi exmujer se ha quedado la custodia, me voy a sucidar. "]
 
@@ -174,7 +214,7 @@ class MyClient(discord.Client):
                     frase = frasesshiny[0]
                 else:
                     frase = frases[i%len(frases)]
-                await text_channel.send(frase + "Hasta ahora me lo han preguntado " + str(num) + " veces.")
+                await text_channel.send(frase + "Hasta ahora me lo han preguntado " + str(num) + " veces. " + strdiff)
                 
             
         elif ("tactico" in message.content.lower() or "táctico" in  message.content.lower()):
