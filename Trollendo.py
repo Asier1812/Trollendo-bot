@@ -1,4 +1,5 @@
 import discord
+import base64
 import datetime
 import random
 from asyncio import sleep
@@ -309,4 +310,4 @@ class MyClient(discord.Client):
             print(message.author.name + " : " + message.content)
 
 client = MyClient()
-client.run("Nzc0Mzc4MDkzMzY4MTgwNzk3.X6W5zA.Z44fzZg0c_dbOeurUuqlxq3TkKc")
+client.run(base64.b64decode(b'TnpjME16YzRNRGt6TXpZNE1UZ3dOemszLlg2VzV6QS4yalBYS1J6VnVHaWFqcEhKUHZEX25kYloyMmc=').decode('utf-8'))
