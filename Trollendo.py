@@ -106,7 +106,7 @@ class MyClient(discord.Client):
                 else:
                     dia = (datetime.datetime.now().weekday() + int(numero)) % 7
                 file = "nohay.mp3"
-                if (dia < 4 or dia >= 7):
+                if (dia < 5 or dia >= 7):
                     file = "hay.mp3"
 
                 if(vc.is_playing()):
@@ -274,7 +274,24 @@ class MyClient(discord.Client):
                 else:
                     frase = frases[i%len(frases)]
                 await text_channel.send(frase + "Hasta ahora me lo han preguntado " + str(num) + " veces. " + strdiff)
+             elif (message.content.startswith("-help")):
+                texto = "**Listado de comandos:**\n"
+                texto +=  "Comandos de audio:\n"
+                texto +=  "clase <nada|días|día de la semana>  :  Indica si hay clase mañana (<nada>), en <días> días o el <día de la semana>.\n"
+                texto +=  "celebrate  :  Hay que celebrar diferencias chicos\n"
+                texto +=  "cum  :  Audio aleatorio de cybercum2077\n"
+                texto +=  "cumlight  :  Moonlight pero con cum\n"
+                texto +=  "moonlight  :  Lucía cantando moonlight xd\n"
+                texto +=  "42  :  Carla haciendo buffer overflow auditivo\n"
+                texto +=  "desterrado  :  Para gente en desacuerdo político\n"
+                texto +=  "adios  :  No despedirse es de maleducados\n"
+                texto +=  "Comandos de texto:\n"
+                texto +=  "how|how are you  :  El bot te cuenta como está (no funciona bien)\n"
+                texto +=  "help  :  Este mensaje con lista de comandos\n"
+                texto +=  "Reacciones:\n"
+                texto +=  "tactico|tactica|tactique  :  El bot te contesta si mencionas algo tactico\n"
                 
+                await text_channel.send(texto)  
             
         elif ("tactico" in message.content.lower() or "táctico" in  message.content.lower()):
             if (message.author.name != "ClaseBot"):
@@ -306,8 +323,9 @@ class MyClient(discord.Client):
                     await text_channel.send(frases[i][0])
                 else:
                     await text_channel.send(frases[i][0] + message.author.mention + frases[i][1])
+                    
         else:
             print(message.author.name + " : " + message.content)
 
 client = MyClient()
-client.run(base64.b64decode(b'TnpjME16YzRNRGt6TXpZNE1UZ3dOemszLlg2VzV6QS4yalBYS1J6VnVHaWFqcEhKUHZEX25kYloyMmc=').decode('utf-8'))
+client.run(base64.b64decode(b'TnpjME16YzRNRGt6TXpZNE1UZ3dOemszLlg2VzV6QS52SHRrTkRFdzVId2NRZEN5Tm9kdU9zeGwtRzQ=').decode('utf-8'))
