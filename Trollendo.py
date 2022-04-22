@@ -2,6 +2,7 @@ import discord
 import base64
 import datetime
 import random
+import os
 from asyncio import sleep
 
 def comoestas():
@@ -134,7 +135,7 @@ class MyClient(discord.Client):
                 self.stateid += 1
                 ownid = self.stateid
                 vc.play(discord.FFmpegPCMAudio(file))
-                await sleep(13)
+                await sleep(18)
                 if (ownid == self.stateid):
                     await vc.disconnect()
                     
@@ -294,10 +295,10 @@ class MyClient(discord.Client):
                 else:
                     frase = frases[i%len(frases)]
                 await text_channel.send(frase + "Hasta ahora me lo han preguntado " + str(num) + " veces. " + strdiff)
-             elif (message.content.startswith("-help")):
+            elif (message.content.startswith("-help")):
                 texto = "**Listado de comandos:**\n"
-                texto +=  "Comandos de audio:\n"
-                texto +=  "clase <nada|días|día de la semana>  :  Indica si hay clase mañana (<nada>), en <días> días o el <día de la semana>.\n"
+                texto +=  "\nComandos de audio:\n"
+                texto +=  "clase <nada|días|día de la semana>  :  Indica si hay clase mañana (<nada>), en <días> días o el <día de la semana>\n"
                 texto +=  "celebrate  :  Hay que celebrar diferencias chicos\n"
                 texto +=  "cum  :  Audio aleatorio de cybercum2077\n"
                 texto +=  "cumlight  :  Moonlight pero con cum\n"
@@ -306,16 +307,16 @@ class MyClient(discord.Client):
                 texto +=  "desterrado  :  Para gente en desacuerdo político\n"
                 texto +=  "bossmusic  :  Música épica\n"
                 texto +=  "adios  :  No despedirse es de maleducados\n"
-                texto +=  "Comandos de texto:\n"
+                texto +=  "\nComandos de texto:\n"
                 texto +=  "how|how are you  :  El bot te cuenta como está (no funciona bien)\n"
                 texto +=  "help  :  Este mensaje con lista de comandos\n"
-                texto +=  "Reacciones:\n"
+                texto +=  "\nReacciones:\n"
                 texto +=  "tactico|tactica|tactique  :  El bot te contesta si mencionas algo tactico\n"
                 
                 await text_channel.send(texto)  
             
         elif ("tactico" in message.content.lower() or "táctico" in  message.content.lower()):
-            if (message.author.name != "ClaseBot"):
+            if (message.author.name != "TrollendoBot"):
                 text_channel = message.channel
                 frases = [["Joer ",", es que encima es táctico"], ["Madre mía ",",encima táctico"],["Joer ",", que táctico"],["Joer, madre mía, encima táctico"]]
                 
@@ -325,7 +326,7 @@ class MyClient(discord.Client):
                 else:
                     await text_channel.send(frases[i][0] + message.author.mention + frases[i][1])
         elif ("tactica" in message.content.lower() or "táctica" in  message.content.lower()):
-            if (message.author.name != "ClaseBot"):
+            if (message.author.name != "TrollendoBot"):
                 text_channel = message.channel
                 frases = [["Joer ",", es que encima es táctica"], ["Madre mía ",",encima táctica"],["Joer ",", que táctica"],["Joer, madre mía, encima táctica"]]
                 
@@ -335,7 +336,7 @@ class MyClient(discord.Client):
                 else:
                     await text_channel.send(frases[i][0] + message.author.mention + frases[i][1])
         elif ("tactique" in message.content.lower() or "táctique" in  message.content.lower()):
-            if (message.author.name != "ClaseBot"):
+            if (message.author.name != "TrollendoBot"):
                 text_channel = message.channel
                 frases = [["Joer ",", es que encima es táctique"], ["Madre mía ",",encima táctique"],["Joer ",", que táctique"],["Joer, madre mía, encima táctique"]]
                 
@@ -349,4 +350,4 @@ class MyClient(discord.Client):
             print(message.author.name + " : " + message.content)
 
 client = MyClient()
-client.run(base64.b64decode(b'TnpjME16YzRNRGt6TXpZNE1UZ3dOemszLlg2VzV6QS52SHRrTkRFdzVId2NRZEN5Tm9kdU9zeGwtRzQ=').decode('utf-8'))
+client.run(base64.b64decode(b'TnpjME16YzRNRGt6TXpZNE1UZ3dOemszLlg2VzV6QS5TaVhlemxMdGVsSmZRWkJ0YUM4RmhwbzBVVkU=').decode('utf-8'))
