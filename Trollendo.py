@@ -117,6 +117,26 @@ class MyClient(discord.Client):
                 await sleep(11.5)
                 if (ownid == self.stateid):
                     await vc.disconnect()
+
+            elif (message.content.startswith("-bossmusic")):
+                if (message.author.voice is None or message.author.voice.channel is None):
+                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
+                    return
+                voice_channel = message.author.voice.channel
+                vc = message.author.guild.voice_client
+                if (not vc):    
+                    vc = await voice_channel.connect()
+                           
+                file = "bossmusic.mp3"
+
+                if(vc.is_playing()):
+                    vc.stop()
+                self.stateid += 1
+                ownid = self.stateid
+                vc.play(discord.FFmpegPCMAudio(file))
+                await sleep(13)
+                if (ownid == self.stateid):
+                    await vc.disconnect()
                     
             elif (message.content.startswith("-celebrate")):
                 if (message.author.voice is None or message.author.voice.channel is None):
@@ -284,6 +304,7 @@ class MyClient(discord.Client):
                 texto +=  "moonlight  :  Lucía cantando moonlight xd\n"
                 texto +=  "42  :  Carla haciendo buffer overflow auditivo\n"
                 texto +=  "desterrado  :  Para gente en desacuerdo político\n"
+                texto +=  "bossmusic  :  Música épica\n"
                 texto +=  "adios  :  No despedirse es de maleducados\n"
                 texto +=  "Comandos de texto:\n"
                 texto +=  "how|how are you  :  El bot te cuenta como está (no funciona bien)\n"
