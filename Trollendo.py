@@ -1,6 +1,9 @@
 import discord
+import base64
 import datetime
 import random
+import os
+import json
 from asyncio import sleep
 
 def comoestas():
@@ -56,257 +59,159 @@ class MyClient(discord.Client):
 
     def __init__(self):
         self.stateid = 0
-        discord.Client.__init__(self)
+        self.comamnd_list = {}
+        with open("commandlist.txt", "r") as f:
+            self.command_list = json.load(f)
+        intents = discord.Intents.default()
+        intents.message_content = True
+        discord.Client.__init__(self, intents=intents)
+        
     async def on_ready(self):
         print('Logged on as {0}!'.format(self.user))
         
         
     async def on_message(self, message):
+            
         if (message.content.startswith("-")):
             text_channel = message.channel
-            if (message.content=="-clase"):
-                if (message.author.voice is None or message.author.voice.channel is None):
-                    await text_channel.send(message.author.mention + ", como vas a saber si hay clase sin meterte a un canal, melón.")
-                    return
-                voice_channel = message.author.voice.channel
-                vc = message.author.guild.voice_client
-                if (not vc):
-                    vc = await voice_channel.connect()
-                dia = datetime.datetime.now().weekday() + 1
-                file = "nohay.mp3"
-                if (dia < 4 or dia == 7):
-                    file = "hay.mp3"
-                if(vc.is_playing()):
-                    vc.stop()
-                self.stateid += 1
-                ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file))
-                await sleep(11.35)
-                if (ownid == self.stateid):
-                    await vc.disconnect()
-            
-            elif (message.content.startswith("-clase")):
-                if (message.author.voice is None or message.author.voice.channel is None):
-                    await text_channel.send(message.author.mention + ", como vas a saber si hay clase sin meterte a un canal, melón.")
-                    return
-                voice_channel = message.author.voice.channel
-                vc = message.author.guild.voice_client
-                if (not vc):    
-                    vc = await voice_channel.connect()
-                
-                numero = message.content.split()[1]
-                if (numero.lower() in "lunes martes miercoles miércoles jueves viernes sabado sábado domingo".split()):
-                    dia = ("lunes martes miercoles miércoles jueves viernes sabado sábado domingo".split()).index(numero.lower())
-                    if (dia >= 3):
-                        dia -= 1
-                    if (dia >= 7):
-                        dia -= 1
+            processed_message = message.content.replace("-", "").replace("?","").replace("¿","").split(" ")
+            command = processed_message[0]
+            print(processed_message)
+            if command in self.command_list:
+                if self.command_list[command]["type"] == "simpleaudio":
+                    if (message.author.voice is None or message.author.voice.channel is None):
+                        await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
+                        return
+                    voice_channel = message.author.voice.channel
+                    vc = message.author.guild.voice_client
+                    if (not vc):
+                        vc = await voice_channel.connect()                        
+                    if(vc.is_playing()):
+                        vc.stop()
                         
-                else:
-                    dia = (datetime.datetime.now().weekday() + int(numero)) % 7
-                file = "nohay.mp3"
-                if (dia < 4 or dia >= 7):
-                    file = "hay.mp3"
-
-                if(vc.is_playing()):
-                    vc.stop()
-                self.stateid += 1
-                ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file))
-                await sleep(11.5)
-                if (ownid == self.stateid):
-                    await vc.disconnect()
+                    self.stateid += 1
+                    ownid = self.stateid
                     
-            elif (message.content.startswith("-celebrate")):
-                if (message.author.voice is None or message.author.voice.channel is None):
-                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
-                    return
-                voice_channel = message.author.voice.channel
-                vc = message.author.guild.voice_client
-                if (not vc):    
-                    vc = await voice_channel.connect()
-                           
-                file = "celebrate.aac"
-
-                if(vc.is_playing()):
-                    vc.stop()
-                self.stateid += 1
-                ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file))
-                await sleep(13)
-                if (ownid == self.stateid):
-                    await vc.disconnect()
+                    file = "audio/" + command + ".mp3"
+                    vc.play(discord.FFmpegPCMAudio(file))
+                    while vc.is_playing():
+                        await sleep(1)
+                    if (ownid == self.stateid):
+                        await vc.disconnect()
+                        
+                elif self.command_list[command]["type"] == "randomaudio":         
+                    if (message.author.voice is None or message.author.voice.channel is None):
+                        await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
+                        return
+                    voice_channel = message.author.voice.channel
+                    vc = message.author.guild.voice_client
+                    if (not vc):    
+                        vc = await voice_channel.connect()
+                    if(vc.is_playing()):
+                        vc.stop()
                     
-            elif (message.content.startswith("-cumlight")):
-                if (message.author.voice is None or message.author.voice.channel is None):
-                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
-                    return
-                voice_channel = message.author.voice.channel
-                vc = message.author.guild.voice_client
-                if (not vc):    
-                    vc = await voice_channel.connect()
+                    self.stateid += 1
+                    ownid = self.stateid
 
-                file = "cumlight.mp3"
-
-                if(vc.is_playing()):
-                    vc.stop()
-                self.stateid += 1
-                ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file))
-                while vc.is_playing():
-                    await sleep(1)
-                if (ownid == self.stateid):
-                    await vc.disconnect()
                     
-            elif (message.content.startswith("-cum")):
-                if (message.author.voice is None or message.author.voice.channel is None):
-                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
-                    return
-                voice_channel = message.author.voice.channel
-                vc = message.author.guild.voice_client
-                if (not vc):    
-                    vc = await voice_channel.connect()
+                    i = random.randint(1, len(os.listdir("audio/" + command)))
+                    file = "audio/" + command + "/" + command + str(i) + ".mp3"
+                    vc.play(discord.FFmpegPCMAudio(file))
+                    while vc.is_playing():
+                        await sleep(1)
+                    if (ownid == self.stateid):
+                        await vc.disconnect()
+                        
+                elif self.command_list[command]["type"] == "claseaudio":
+                    if (message.author.voice is None or message.author.voice.channel is None):
+                        await text_channel.send(message.author.mention + ", como vas a saber si hay clase sin meterte a un canal, melón.")
+                        return
+                    voice_channel = message.author.voice.channel
+                    vc = message.author.guild.voice_client
+                    if (not vc):
+                        vc = await voice_channel.connect()
+                    if(vc.is_playing()):
+                        vc.stop()
 
+                    dia = datetime.datetime.now().weekday()
+                    if (len(processed_message) > 1):
+                        arg = processed_message[1].lower().replace("á","a").replace("é","e")
+                        if (arg in  "lunes martes miercoles jueves viernes sabado domingo".split()):
+                            dia = ("lunes martes miercoles jueves viernes sabado domingo".split()).index(arg)
+                        elif arg.isdigit():
+                            dia = datetime.datetime.now().weekday() + int(arg) - 1
+                    
 
-                i = random.randint(1,6)
-                file = "cum"+str(i)+".mp3"
+                    file = "audio/nohay.mp3"    
+                    if (dia % 7 < 5):
+                        file = "audio/hay.mp3"
+                    
+                    self.stateid += 1
+                    ownid = self.stateid
+                    
+                    vc.play(discord.FFmpegPCMAudio(file))
+                    await sleep(11.35)
+                    if (ownid == self.stateid):
+                        await vc.disconnect()
+                        
+                elif self.command_list[command]["type"] == "howtext":
+                    num, dd, sd = comoestas()
+                    strdiff = timedifftostr(dd, sd)
+                    frases = ["Bastante bien joven. ", "Pues aqui estamos. ", "No muy bien amigo. ","El peor día de mi vida. " ,"Aburrido la verdad. Dale algun comandillo. "]
+                    frasesshiny = ["Mi exmujer se ha quedado la custodia, me voy a sucidar. "]
 
-                if(vc.is_playing()):
-                    vc.stop()
-                self.stateid += 1
-                ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file))
-                while vc.is_playing():
-                    await sleep(1)
-                if (ownid == self.stateid):
-                    await vc.disconnect()
-
-            
-            elif (message.content.startswith("-moonlight")):
-                if (message.author.voice is None or message.author.voice.channel is None):
-                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
-                    return
-                voice_channel = message.author.voice.channel
-                vc = message.author.guild.voice_client
-                if (not vc):    
-                    vc = await voice_channel.connect()
-
-                file = "moonlight.mp3"
-
-                if(vc.is_playing()):
-                    vc.stop()
-                self.stateid += 1
-                ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file))
-                while vc.is_playing():
-                    await sleep(1)
-                if (ownid == self.stateid):
-                    await vc.disconnect()
-            elif (message.content.startswith("-42")):
-                if (message.author.voice is None or message.author.voice.channel is None):
-                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
-                    return
-                voice_channel = message.author.voice.channel
-                vc = message.author.guild.voice_client
-                if (not vc):    
-                    vc = await voice_channel.connect()
-
-                file = "42.mp3"
-
-                if(vc.is_playing()):
-                    vc.stop()
-                self.stateid += 1
-                ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file))
-                while vc.is_playing():
-                    await sleep(1)
-                if (ownid == self.stateid):
-                    await vc.disconnect()
-            elif (message.content.startswith("-desterrado")):
-                if (message.author.voice is None or message.author.voice.channel is None):
-                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
-                    return
-                voice_channel = message.author.voice.channel
-                vc = message.author.guild.voice_client
-                if (not vc):    
-                    vc = await voice_channel.connect()
-
-                file = "medestierras.mp3"
-
-                if(vc.is_playing()):
-                    vc.stop()
-                self.stateid += 1
-                ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file))
-                await sleep(6)
-                if (ownid == self.stateid):
-                    await vc.disconnect()
-            elif (message.content.startswith("-adios")):
-                if (message.author.voice is None or message.author.voice.channel is None):
-                    await text_channel.send(message.author.mention + ", únete a un canal primero, melón.")
-                    return
-                voice_channel = message.author.voice.channel
-                vc = message.author.guild.voice_client
-                if (not vc):    
-                    vc = await voice_channel.connect()
-
-                file = "adios.mp3"
-
-                if(vc.is_playing()):
-                    vc.stop()
-                self.stateid += 1
-                ownid = self.stateid
-                vc.play(discord.FFmpegPCMAudio(file))
-                await sleep(8)
-                if (ownid == self.stateid):
-                    await vc.disconnect()
-            elif (message.content.replace("?","").replace("¿","").startswith("-how") or message.content.replace("?","").replace("¿","").startswith("-how are you") ):
-                num, dd, sd = comoestas()
-                strdiff = timedifftostr(dd, sd)
-                frases = ["Bastante bien joven. ", "Pues aqui estamos. ", "No muy bien amigo. ","El peor día de mi vida. " ,"Aburrido la verdad. Dale algun comandillo. "]
-                frasesshiny = ["Mi exmujer se ha quedado la custodia, me voy a sucidar. "]
-
-                frase = ""
-                i = random.randint(1, 100)
-                if (i == 100):
-                    frase = frasesshiny[0]
+                    frase = ""
+                    i = random.randint(0, 100)
+                    if (i == 0):
+                        frase = frasesshiny[0]
+                    else:
+                        frase = frases[i%len(frases)]
+                    await text_channel.send(frase + "Hasta ahora me lo han preguntado " + str(num) + " veces. " + strdiff)
+                    
+                elif self.command_list[command]["type"] == "helptext":
+                    texto = "**Listado de comandos:**\n"
+                    texto +=  "\nComandos de audio:\n"
+                    texto +=  "clase <nada|días|día de la semana>  :  Indica si hay clase mañana (<nada>), en <días> días o el <día de la semana>\n"
+                    texto +=  "celebrate  :  Hay que celebrar diferencias chicos\n"
+                    texto +=  "cum  :  Audio aleatorio de cybercum2077\n"
+                    texto +=  "cumlight  :  Moonlight pero con cum\n"
+                    texto +=  "moonlight  :  Lucía cantando moonlight xd\n"
+                    texto +=  "42  :  Carla haciendo buffer overflow auditivo\n"
+                    texto +=  "desterrado  :  Para gente en desacuerdo político\n"
+                    texto +=  "bossmusic  :  Música épica\n"
+                    texto +=  "hola  :  No saludar es de maleducados\n"
+                    texto +=  "adios  :  No despedirse es de maleducados\n"
+                    texto +=  "marta  :  Self explanatory\n"
+                    texto +=  "\nComandos de texto:\n"
+                    texto +=  "how|how are you  :  El bot te cuenta como está (no funciona bien)\n"
+                    texto +=  "help  :  Este mensaje con lista de comandos\n"
+                    texto +=  "\nReacciones:\n"
+                    texto +=  "tactico|tactica|tactique  :  El bot te contesta si mencionas algo tactico\n"
+                    
+                    await text_channel.send(texto)
                 else:
-                    frase = frases[i%len(frases)]
-                await text_channel.send(frase + "Hasta ahora me lo han preguntado " + str(num) + " veces. " + strdiff)
-                
-            
-        elif ("tactico" in message.content.lower() or "táctico" in  message.content.lower()):
-            if (message.author.name != "ClaseBot"):
-                text_channel = message.channel
-                frases = [["Joer ",", es que encima es táctico"], ["Madre mía ",",encima táctico"],["Joer ",", que táctico"],["Joer, madre mía, encima táctico"]]
-                
-                i = random.randint(0,3)
-                if (i == 3):
-                    await text_channel.send(frases[i][0])
-                else:
-                    await text_channel.send(frases[i][0] + message.author.mention + frases[i][1])
-        elif ("tactica" in message.content.lower() or "táctica" in  message.content.lower()):
-            if (message.author.name != "ClaseBot"):
-                text_channel = message.channel
-                frases = [["Joer ",", es que encima es táctica"], ["Madre mía ",",encima táctica"],["Joer ",", que táctica"],["Joer, madre mía, encima táctica"]]
-                
-                i = random.randint(0,3)
-                if (i == 3):
-                    await text_channel.send(frases[i][0])
-                else:
-                    await text_channel.send(frases[i][0] + message.author.mention + frases[i][1])
-        elif ("tactique" in message.content.lower() or "táctique" in  message.content.lower()):
-            if (message.author.name != "ClaseBot"):
-                text_channel = message.channel
-                frases = [["Joer ",", es que encima es táctique"], ["Madre mía ",",encima táctique"],["Joer ",", que táctique"],["Joer, madre mía, encima táctique"]]
-                
-                i = random.randint(0,3)
-                if (i == 3):
-                    await text_channel.send(frases[i][0])
-                else:
-                    await text_channel.send(frases[i][0] + message.author.mention + frases[i][1])
+                    print("jej")
+            else:
+                print("jej2")
         else:
+            #Check reactions
+            for r in ["tactico", "táctico", "tactica", "táctica", "tactique", "táctique"]:
+                if (r in message.content.lower()):
+                    if (message.author.name != "TrollendoBot"):
+                        text_channel = message.channel
+                        frases = [["Joer ",", es que encima es "], ["Madre mía ",",encima "],["Joer ",", que "],["Joer, madre mía, encima "]]
+                                    
+                        i = random.randint(0,3)
+                        if (i == 3):
+                            await text_channel.send(frases[i][0] + r)
+                        else:
+                            await text_channel.send(frases[i][0] + message.author.mention + frases[i][1] + r)
+           
             print(message.author.name + " : " + message.content)
 
+
 client = MyClient()
-client.run("Nzc0Mzc4MDkzMzY4MTgwNzk3.X6W5zA.Z44fzZg0c_dbOeurUuqlxq3TkKc")
+token = ""
+with open("Secret.txt") as f:
+    token = f.read()
+client.run(token)
